@@ -11,10 +11,8 @@ import { SiKubernetes, SiLaravel, SiNextdotjs } from "react-icons/si";
 export default function Home() {
   return (
     <div className="flex flex-col h-screen p-10 overflow-scroll">
-      {/* Main Container */}
       <div className="h-fit border-2 border-black rounded-sm p-8 flex flex-col gap-8 ">
 
-        {/* Header */}
         <header className="flex flex-col gap-2">
           <h1 className="text-4xl font-semibold tracking-tight">
             Juan Ignacio Campos
