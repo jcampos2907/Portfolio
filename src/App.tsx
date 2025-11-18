@@ -13,7 +13,7 @@ function App() {
 
   return (
     <div className="bg-gray-200">
-      <div className="flex flex-col h-screen p-10 overflow-scroll">
+      <div className="flex flex-col h-screen p-2 md:p-10 overflow-scroll">
         {/* Main Container */}
         <div className="h-fit border-2 border-black rounded-sm p-8 flex flex-col gap-8 ">
           <header className="flex flex-col gap-2">
@@ -49,13 +49,13 @@ function App() {
                 <FaEnvelope />
               </a>
               {/* CV Button */}
-              <a
+              {/* <a
                 href="/JuanCamposCV.pdf" // place your file in /public
                 target="_blank"
                 className="border border-black rounded-sm px-3 py-1 text-sm hover:bg-black hover:text-white transition ml-4"
               >
                 Download CV
-              </a>
+              </a> */}
             </div>
           </header>
 

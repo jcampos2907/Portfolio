@@ -6,7 +6,7 @@ const projects = [
         description_long: "Developed a comprehensive event management platform featuring a Laravel backend and React.js frontend. Integrated Single Sign-On (SSO) for seamless user authentication, utilized OpenAPI for type-safe API interactions, implemented vector search for enhanced data retrieval, and automated DevOps processes on Kubernetes for scalable deployment.",
         labels: ["Laravel", "React.js", "Kubernetes", "PostgresQL", "Docker"],
         url: "https://doceventos.famcr.org",
-        git_link: null
+        git_link: "https://github.com/jcampos2907/eventos-docs"
     },
     {
         id: "ux-research-choice-overload",
