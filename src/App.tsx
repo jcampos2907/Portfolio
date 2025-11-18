@@ -1,6 +1,5 @@
 import ProjectSection from "@/components/landing/project-section";
 import projects from "@/lib/const/projects";
-import { useState } from 'react';
 import {
   FaEnvelope,
   FaGithub,
@@ -11,7 +10,6 @@ import { SiKubernetes, SiLaravel, SiNextdotjs } from "react-icons/si";
 // import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <div className="bg-gray-200">
