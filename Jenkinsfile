@@ -54,7 +54,6 @@ spec:
             secretValues: [
               [envVar: "DOCKERHUB_USER", vaultKey: "DOCKERHUB_USER"],
               [envVar: "DOCKERHUB_PASS", vaultKey: "DOCKERHUB_PASS"],
-              [envVar: "REGISTRY_URL",  vaultKey: "REGISTRY_URL"]
             ]
           ]]
 
@@ -79,8 +78,8 @@ EOF
                 /kaniko/executor \
                   --context \$(pwd) \
                   --dockerfile Dockerfile \
-                  --destination ${REGISTRY_URL}/${IMAGE_REPO}:\${GIT_SHA} \
-                  --destination ${REGISTRY_URL}/${IMAGE_REPO}:latest \
+                  --destination ${IMAGE_REPO}:\${GIT_SHA} \
+                  --destination ${IMAGE_REPO}:latest \
                   --cache=true
               """
             }
@@ -111,7 +110,7 @@ EOF
 
                 # Update deployment to the new image tag
                 kubectl -n ${DEPLOY_NS} set image deployment/${DEPLOYMENT} \
-                  ${CONTAINER}=${REGISTRY_URL}/${IMAGE_REPO}:\${GIT_SHA}
+                  ${CONTAINER}=${IMAGE_REPO}:\${GIT_SHA}
 
                 # Wait for rollout
                 kubectl -n ${DEPLOY_NS} rollout status deployment/${DEPLOYMENT}
