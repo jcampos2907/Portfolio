@@ -15,7 +15,7 @@ spec:
       - name: docker-config
         mountPath: /kaniko/.docker
   - name: kubectl
-    image: bitnami/kubectl:1.31.0-debian-12-r0
+    image: rancher/kubectl:latest
     command: ["cat"]
     tty: true
   volumes:
@@ -102,7 +102,10 @@ EOF
 
           withVault(vaultSecrets: secrets) {
             container("kubectl") {
-              sh('echo $CCM_KUBECONFIG_B64')
+                sh '''
+                  echo "len: ${#CCM_KUBECONFIG_B64}"
+                  echo "$CCM_KUBECONFIG_B64" | head -c 40; echo
+                '''
             }
           }
         }
