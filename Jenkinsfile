@@ -115,7 +115,6 @@ EOF
               echo "== kubeconfig decoded, testing connectivity =="
 
               # fail fast if API can't be reached/auth'd
-              kubectl version --short --request-timeout=20s
               kubectl get ns --request-timeout=20s
 
               echo "== updating image to ${IMAGE_REPO}:\$GIT_SHA =="
