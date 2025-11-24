@@ -33,17 +33,17 @@ spec:
   }
 
   stages {
-    stage("Checkout") {
-      steps {
-        checkout([$class: 'GitSCM',
-          branches: [[name: "*/main"]],
-          userRemoteConfigs: [[
-            url: "https://github.com/jcampos2907/portfolio.git",
-            credentialsId: "github-pat"
-          ]]
-        ])
-      }
-    }
+    // stage("Checkout") {
+    //   steps {
+    //     checkout([$class: 'GitSCM',
+    //       branches: [[name: "*/main"]],
+    //       userRemoteConfigs: [[
+    //         url: "https://github.com/jcampos2907/portfolio.git",
+    //         credentialsId: "github-pat"
+    //       ]]
+    //     ])
+    //   }
+    // }
 
     stage("Build & Push") {
       steps {
