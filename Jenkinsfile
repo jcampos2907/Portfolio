@@ -16,7 +16,7 @@ spec:
         mountPath: /kaniko/.docker
   - name: kubectl
     image: rancher/kubectl:v1.34.2
-    command: ["cat"]
+    command: ["sh", "-c", "sleep infinity"]
     tty: true
   volumes:
     - name: docker-config
