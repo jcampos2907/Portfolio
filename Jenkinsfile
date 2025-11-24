@@ -15,7 +15,7 @@ spec:
       - name: docker-config
         mountPath: /kaniko/.docker
   - name: kubectl
-    image: ancher/kubectl:v1.34.2
+    image: rancher/kubectl:v1.34.2
     command: ["cat"]
     tty: true
   volumes:
