@@ -9,8 +9,8 @@ kind: Pod
 spec:
   containers:
   - name: kaniko
-    image: gcr.io/kaniko-project/executor:v1.23.2
-    command: ["cat"]
+    image: gcr.io/kaniko-project/executor:v1.23.2-debug
+    command: ["/busybox/cat"]
     tty: true
     volumeMounts:
       - name: docker-config
@@ -40,7 +40,7 @@ spec:
           branches: [[name: "*/main"]],
           userRemoteConfigs: [[
             url: "https://github.com/jcampos2907/portfolio.git",
-            credentialsId: "github-pat"   // still from JCasC/Vault SecretSource
+            credentialsId: "github-pat"
           ]]
         ])
       }
@@ -63,6 +63,7 @@ spec:
             container("kaniko") {
               sh """
                 set -euo pipefail
+
                 cat > /kaniko/.docker/config.json <<EOF
                 {
                   "auths": {
@@ -109,6 +110,11 @@ EOF
 
                 GIT_SHA=\$(git rev-parse --short=8 HEAD)
 
+                # Update deployment to the new image tag
+                kubectl -n ${DEPLOY_NS} set image deployment/${DEPLOYMENT} \
+                  ${CONTAINER}=${REGISTRY_URL}/${IMAGE_REPO}:\${GIT_SHA}
+
+                # Wait for rollout
                 kubectl -n ${DEPLOY_NS} rollout status deployment/${DEPLOYMENT}
               """
             }
