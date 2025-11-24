@@ -1,0 +1,120 @@
+pipeline {
+  agent {
+    kubernetes {
+      label "portfolio-ci"
+      defaultContainer "jnlp"
+      yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:v1.23.2
+    command: ["cat"]
+    tty: true
+    volumeMounts:
+      - name: docker-config
+        mountPath: /kaniko/.docker
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    command: ["cat"]
+    tty: true
+  volumes:
+    - name: docker-config
+      emptyDir: {}
+"""
+    }
+  }
+
+  environment {
+    IMAGE_REPO = "jicamposr/portfolio"  // repo only; registry comes from Vault now
+    DEPLOY_NS  = "universidad"
+    DEPLOYMENT = "portfolio"
+    CONTAINER  = "portfolio"
+  }
+
+  stages {
+    stage("Checkout") {
+      steps {
+        checkout([$class: 'GitSCM',
+          branches: [[name: "*/main"]],
+          userRemoteConfigs: [[
+            url: "https://github.com/jcampos2907/portfolio.git",
+            credentialsId: "github-pat"   // still from JCasC/Vault SecretSource
+          ]]
+        ])
+      }
+    }
+
+    stage("Build & Push") {
+      steps {
+        script {
+          def secrets = [[
+            path: "kv/apps/jenkins",
+            engineVersion: 2,
+            secretValues: [
+              [envVar: "DOCKERHUB_USER", vaultKey: "DOCKERHUB_USER"],
+              [envVar: "DOCKERHUB_PASS", vaultKey: "DOCKERHUB_PASS"],
+              [envVar: "REGISTRY_URL",  vaultKey: "REGISTRY_URL"]
+            ]
+          ]]
+
+          withVault(vaultSecrets: secrets) {
+            container("kaniko") {
+              sh """
+                set -euo pipefail
+                cat > /kaniko/.docker/config.json <<EOF
+                {
+                  "auths": {
+                    "https://index.docker.io/v1/": {
+                      "username": "${DOCKERHUB_USER}",
+                      "password": "${DOCKERHUB_PASS}"
+                    }
+                  }
+                }
+EOF
+
+                GIT_SHA=\$(git rev-parse --short=8 HEAD)
+
+                /kaniko/executor \
+                  --context \$(pwd) \
+                  --dockerfile Dockerfile \
+                  --destination ${REGISTRY_URL}/${IMAGE_REPO}:\${GIT_SHA} \
+                  --destination ${REGISTRY_URL}/${IMAGE_REPO}:latest \
+                  --cache=true
+              """
+            }
+          }
+        }
+      }
+    }
+
+    stage("Deploy to CCM cluster") {
+      steps {
+        script {
+          def secrets = [[
+            path: "kv/apps/jenkins",
+            engineVersion: 2,
+            secretValues: [
+              [envVar: "CCM_KUBECONFIG_B64", vaultKey: "CCM_KUBECONFIG_B64"]
+            ]
+          ]]
+
+          withVault(vaultSecrets: secrets) {
+            container("kubectl") {
+              sh """
+                set -euo pipefail
+                echo "$CCM_KUBECONFIG_B64" | base64 -d > /tmp/kubeconfig
+                export KUBECONFIG=/tmp/kubeconfig
+
+                GIT_SHA=\$(git rev-parse --short=8 HEAD)
+
+                kubectl -n ${DEPLOY_NS} rollout status deployment/${DEPLOYMENT}
+              """
+            }
+          }
+        }
+      }
+    }
+  }
+}
