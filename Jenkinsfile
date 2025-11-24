@@ -83,7 +83,8 @@ EOF
                   --cache-repo ${IMAGE_REPO}-cache \
                   --snapshot-mode=redo \
                   --use-new-run \
-                  --single-snapshot
+                  --cache-copy-layers \
+                  --cache-run-layers 
               """
             }
           }
@@ -110,11 +111,9 @@ EOF
                 echo "\$CCM_KUBECONFIG_B64" | base64 -d > /tmp/kubeconfig
                 export KUBECONFIG=/tmp/kubeconfig
 
-                GIT_SHA=${gitSha}
+                GIT_SHA=${GIT_SHA}
 
-                # Update deployment to the new image tag
-                kubectl -n ${DEPLOY_NS} set image deployment/${DEPLOYMENT} \
-                  ${CONTAINER}=${IMAGE_REPO}:\$GIT_SHA
+       
 
                 # Wait for rollout
                 kubectl -n ${DEPLOY_NS} rollout status deployment/${DEPLOYMENT}
