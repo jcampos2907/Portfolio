@@ -74,6 +74,7 @@ EOF
                   --cache=true \
                   --cache-repo ${IMAGE_REPO}-cache \
                   --snapshot-mode=redo \
+                  --use-new-run \
                   --single-snapshot
               """
             }
