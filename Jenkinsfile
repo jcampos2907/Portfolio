@@ -71,7 +71,9 @@ EOF
                   --dockerfile Dockerfile \
                   --destination ${IMAGE_REPO}:${gitSha} \
                   --destination ${IMAGE_REPO}:latest \
-                  --cache=true
+                  --cache=true \
+                  --snapshotMode=redo \
+                  --single-snapshot
               """
             }
           }
