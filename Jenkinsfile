@@ -72,7 +72,7 @@ EOF
                   --destination ${IMAGE_REPO}:${gitSha} \
                   --destination ${IMAGE_REPO}:latest \
                   --cache=true \
-                  --snapshotMode=redo \
+                  --snapshot-mode=redo \
                   --single-snapshot
               """
             }
