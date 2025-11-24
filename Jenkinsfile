@@ -26,7 +26,7 @@ spec:
   }
 
   environment {
-    IMAGE_REPO = "jicamposr/portfolio"     // Docker Hub repo
+    IMAGE_REPO = "jicamposr/portfolio"
     DEPLOY_NS  = "universidad"
     DEPLOYMENT = "portfolio"
     CONTAINER  = "portfolio"
@@ -34,7 +34,7 @@ spec:
 
   stages {
 
-        stage("Prepare") {
+    stage("Prepare") {
       steps {
         script {
           env.GIT_SHA = (env.GIT_COMMIT ?: "").take(8)
@@ -46,8 +46,6 @@ spec:
     stage("Build & Push") {
       steps {
         script {
-          // Jenkins provides this from the default checkout
-
           def secrets = [[
             path: "kv/apps/jenkins",
             engineVersion: 2,
@@ -62,7 +60,6 @@ spec:
               sh """
                 set -euo pipefail
 
-                # Write Docker Hub auth config (shell expands env vars)
                 cat > /kaniko/.docker/config.json <<EOF
                 {
                   "auths": {
@@ -77,14 +74,14 @@ EOF
                 /kaniko/executor \
                   --context \$(pwd) \
                   --dockerfile Dockerfile \
-                  --destination ${IMAGE_REPO}:${GIT_SHA} \
+                  --destination ${IMAGE_REPO}:\$GIT_SHA \
                   --destination ${IMAGE_REPO}:latest \
                   --cache=true \
                   --cache-repo ${IMAGE_REPO}-cache \
                   --snapshot-mode=redo \
                   --use-new-run \
                   --cache-copy-layers \
-                  --cache-run-layers 
+                  --cache-run-layers
               """
             }
           }
@@ -111,11 +108,9 @@ EOF
                 echo "\$CCM_KUBECONFIG_B64" | base64 -d > /tmp/kubeconfig
                 export KUBECONFIG=/tmp/kubeconfig
 
-                GIT_SHA=${GIT_SHA}
+                kubectl -n ${DEPLOY_NS} set image deployment/${DEPLOYMENT} \
+                  ${CONTAINER}=${IMAGE_REPO}:\$GIT_SHA
 
-       
-
-                # Wait for rollout
                 kubectl -n ${DEPLOY_NS} rollout status deployment/${DEPLOYMENT}
               """
             }
