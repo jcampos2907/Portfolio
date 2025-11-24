@@ -1,7 +1,6 @@
 pipeline {
   agent {
     kubernetes {
-      label "portfolio-ci"
       defaultContainer "jnlp"
       yaml """
 apiVersion: v1
