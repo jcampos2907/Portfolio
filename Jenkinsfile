@@ -34,11 +34,19 @@ spec:
 
   stages {
 
+        stage("Prepare") {
+      steps {
+        script {
+          env.GIT_SHA = (env.GIT_COMMIT ?: "").take(8)
+          echo "Using GIT_SHA=${env.GIT_SHA}"
+        }
+      }
+    }
+
     stage("Build & Push") {
       steps {
         script {
           // Jenkins provides this from the default checkout
-          def gitSha = (env.GIT_COMMIT ?: "").take(8)
 
           def secrets = [[
             path: "kv/apps/jenkins",
@@ -69,7 +77,7 @@ EOF
                 /kaniko/executor \
                   --context \$(pwd) \
                   --dockerfile Dockerfile \
-                  --destination ${IMAGE_REPO}:${gitSha} \
+                  --destination ${IMAGE_REPO}:${GIT_SHA} \
                   --destination ${IMAGE_REPO}:latest \
                   --cache=true \
                   --cache-repo ${IMAGE_REPO}-cache \
