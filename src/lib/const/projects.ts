@@ -1,5 +1,13 @@
 const projects = [
     {
+        id: "jenkins",
+        title: "Jenkins CI/CD Pipelines",
+        description: "Implemented Jenkins pipelines for continuous integration and continuous deployment, automating build, test, and deployment processes.",
+        description_long: "Developed and maintained Jenkins CI/CD pipelines to streamline software development workflows. Automated the build, testing, and deployment stages to ensure rapid and reliable delivery of applications. Integrated various tools and plugins to enhance pipeline functionality and monitoring. Set up Jenkins utilizing Vault for secure credential management and GitOps practices for version-controlled pipeline configurations. This set up maintains most of the services I develop constantly including this website.",
+        labels: ["CI/CD", "Development Pipelines"],
+        git_link: "https://github.com/jcampos2907/homelab"
+    },
+    {
         id: "event-management-platform",
         title: "Event Management Platform",
         description: "Laravel backend + React.js frontend with SSO, OpenAPI types, vector search & DevOps automation on Kubernetes.",
@@ -21,7 +29,7 @@ const projects = [
         id: "homelab-infrastructure",
         title: "Homelab Infrastructure",
         description: "Full Kubernetes cluster with CNPG, Longhorn, Traefik, Grafana, Vault, Loki, and GitOps deployments.",
-        description_long: "Deployed and managed a comprehensive homelab infrastructure utilizing Kubernetes to orchestrate containerized applications. Implemented Cloud Native PostgreSQL (CNPG) for robust database management, Longhorn for distributed block storage, and Traefik as a dynamic reverse proxy and load balancer. Set up Grafana for real-time monitoring and visualization of system metrics, and HashiCorp Vault for secure secret management. Integrated Loki for efficient log aggregation and analysis. Employed GitOps principles to automate deployments and maintain configuration as code, ensuring consistency and reliability across the infrastructure.",
+        description_long: "Deployed and managed a comprehensive homelab infrastructure utilizing Kubernetes to orchestrate containerized applications. Implemented Cloud Native PostgreSQL (CNPG) for robust database management, Longhorn for distributed block storage, and Traefik as a dynamic reverse proxy and load balancer. Set up Grafana for real-time monitoring and visualization of system metrics, and HashiCorp Vault for secure secret management. Integrated Loki for efficient log aggregation and analysis. Employed GitOps principles utilizing ArgoCD to automate deployments and maintain configuration as code, ensuring consistency and reliability across the infrastructure.",
         labels: ["Kubernetes", "CNPG", "Longhorn", "Traefik", "Grafana", "Vault", "Loki", "GitOps"],
         git_link: "https://github.com/jcampos2907/homelab",
 
@@ -34,7 +42,7 @@ const projects = [
         labels: ["UX Research", "Cognitive Psychology", "Mobile UI", "User Behavior Analysis"],
         url: "https://dashboardd9.famcr.org",
         git_link: "https://github.com/jcampos2907/dashboardd9"
-    },
+    }
 ];
 
 export default projects;
