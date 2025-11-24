@@ -1,31 +1,25 @@
 # Stage 1: Build Stage
 FROM node:22-alpine AS build
 WORKDIR /app
-
-# deps first for caching
 COPY package*.json ./
-RUN npm ci
-
-# then source
+RUN npm install --force
 COPY . .
 RUN npm run build
 
 # Stage 2: Production Stage (Express)
 FROM node:22-alpine
 WORKDIR /app
-
-# copy build outputs
-COPY --from=build /app/dist /app/dist
-COPY --from=build /app/server.js /app/server.js
-
-# Kaniko needs trailing slash when multiple sources
-COPY package*.json /app/
+COPY --from=build /app/dist /app/dist  
+COPY --from=build /app/server.js /app/server.js  
+COPY package*.json /app  
 
 # Install only production dependencies
 RUN npm ci --omit=dev --legacy-peer-deps
 
+# Force production mode
 ENV NODE_ENV=production
 ENV PORT=3000
 
+# Set the command to run your Express server
 EXPOSE 3000
 CMD ["node", "server.js"]
