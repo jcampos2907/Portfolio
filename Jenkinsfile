@@ -6,6 +6,8 @@ pipeline {
 apiVersion: v1
 kind: Pod
 spec:
+  imagePullSecrets:
+      - name: regcred
   containers:
   - name: kaniko
     image: gcr.io/kaniko-project/executor:v1.23.2-debug
@@ -15,7 +17,7 @@ spec:
       - name: docker-config
         mountPath: /kaniko/.docker
   - name: kubectl
-    image: google/cloud-sdk:alpine
+    image: jicamposr/kubectl:1.31.3
     command: ["sh", "-c", "sleep infinity"]
     tty: true
   volumes:
