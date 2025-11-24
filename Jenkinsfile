@@ -15,7 +15,7 @@ spec:
       - name: docker-config
         mountPath: /kaniko/.docker
   - name: kubectl
-    image: bitnami/kubectl:latest
+    image: bitnami/kubectl:1.31.0-debian-12-r0
     command: ["cat"]
     tty: true
   volumes:
