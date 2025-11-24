@@ -15,7 +15,7 @@ spec:
       - name: docker-config
         mountPath: /kaniko/.docker
   - name: kubectl
-    image: rancher/kubectl:v1.34.2
+    image: google/cloud-sdk:alpine
     command: ["sh", "-c", "sleep infinity"]
     tty: true
   volumes:
