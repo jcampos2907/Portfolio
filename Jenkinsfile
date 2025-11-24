@@ -26,34 +26,26 @@ spec:
   }
 
   environment {
-    IMAGE_REPO = "jicamposr/portfolio"  // repo only; registry comes from Vault now
+    IMAGE_REPO = "jicamposr/portfolio"     // Docker Hub repo
     DEPLOY_NS  = "universidad"
     DEPLOYMENT = "portfolio"
     CONTAINER  = "portfolio"
   }
 
   stages {
-    // stage("Checkout") {
-    //   steps {
-    //     checkout([$class: 'GitSCM',
-    //       branches: [[name: "*/main"]],
-    //       userRemoteConfigs: [[
-    //         url: "https://github.com/jcampos2907/portfolio.git",
-    //         credentialsId: "github-pat"
-    //       ]]
-    //     ])
-    //   }
-    // }
 
     stage("Build & Push") {
       steps {
         script {
+          // Jenkins provides this from the default checkout
+          def gitSha = (env.GIT_COMMIT ?: "").take(8)
+
           def secrets = [[
             path: "kv/apps/jenkins",
             engineVersion: 2,
             secretValues: [
               [envVar: "DOCKERHUB_USER", vaultKey: "DOCKERHUB_USER"],
-              [envVar: "DOCKERHUB_PASS", vaultKey: "DOCKERHUB_PASS"],
+              [envVar: "DOCKERHUB_PASS", vaultKey: "DOCKERHUB_PASS"]
             ]
           ]]
 
@@ -62,23 +54,22 @@ spec:
               sh """
                 set -euo pipefail
 
+                # Write Docker Hub auth config (shell expands env vars)
                 cat > /kaniko/.docker/config.json <<EOF
                 {
                   "auths": {
                     "https://index.docker.io/v1/": {
-                      "username": "${DOCKERHUB_USER}",
-                      "password": "${DOCKERHUB_PASS}"
+                      "username": "\$DOCKERHUB_USER",
+                      "password": "\$DOCKERHUB_PASS"
                     }
                   }
                 }
 EOF
 
-                GIT_SHA=\$(git rev-parse --short=8 HEAD)
-
                 /kaniko/executor \
                   --context \$(pwd) \
                   --dockerfile Dockerfile \
-                  --destination ${IMAGE_REPO}:\${GIT_SHA} \
+                  --destination ${IMAGE_REPO}:${gitSha} \
                   --destination ${IMAGE_REPO}:latest \
                   --cache=true
               """
@@ -103,14 +94,15 @@ EOF
             container("kubectl") {
               sh """
                 set -euo pipefail
-                echo "$CCM_KUBECONFIG_B64" | base64 -d > /tmp/kubeconfig
+
+                echo "\$CCM_KUBECONFIG_B64" | base64 -d > /tmp/kubeconfig
                 export KUBECONFIG=/tmp/kubeconfig
 
-                GIT_SHA=\$(git rev-parse --short=8 HEAD)
+                GIT_SHA=${gitSha}
 
                 # Update deployment to the new image tag
                 kubectl -n ${DEPLOY_NS} set image deployment/${DEPLOYMENT} \
-                  ${CONTAINER}=${IMAGE_REPO}:\${GIT_SHA}
+                  ${CONTAINER}=${IMAGE_REPO}:\$GIT_SHA
 
                 # Wait for rollout
                 kubectl -n ${DEPLOY_NS} rollout status deployment/${DEPLOYMENT}
