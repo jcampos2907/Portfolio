@@ -16,15 +16,7 @@ const projects = [
         url: "https://doceventos.famcr.org",
         git_link: "https://github.com/jcampos2907/eventos-docs"
     },
-    {
-        id: "ux-research-choice-overload",
-        title: "UX Research – Choice Overload",
-        description: "Applied cognitive psychology to analyze sequential vs. simultaneous decision-making in mobile UI.",
-        description_long: "Conducted in-depth UX research focusing on the cognitive aspects of choice overload in mobile user interfaces. Analyzed user behavior and decision-making processes to optimize UI design for better user experience. This project is currently ongoing, and cannot be shared publicly as it is going through peer review for academic publication.",
-        labels: ["UX Research", "Cognitive Psychology", "Mobile UI", "User Behavior Analysis"],
-        url: "",
-        git_link: null
-    },
+
     {
         id: "homelab-infrastructure",
         title: "Homelab Infrastructure",
@@ -33,6 +25,23 @@ const projects = [
         labels: ["Kubernetes", "CNPG", "Longhorn", "Traefik", "Grafana", "Vault", "Loki", "GitOps"],
         git_link: "https://github.com/jcampos2907/homelab",
 
+    },
+    {
+        id: "c#-mcp-project",
+        title: "MCP Server in C#",
+        description: "Developed a Model Context Protocol Server in C# to facilitate communication between AI models and client applications.",
+        description_long: "This MCP bridges data from a Business Data Analytics Database and AI Agents, enabling dynamic interactions and data exchange. The server is designed to handle multiple client connections, manage requests, and ensure efficient data flow between AI models and applications. It supports various AI agents, allowing them to access and utilize business data for enhanced decision-making and analysis. The project showcases proficiency in C# programming, network communication protocols, and AI integration.",
+        labels: ["MCP Server", "AI Agents", "AI", "Human-AI Interaction"],
+        git_link: "https://github.com/jcampos2907/BIKEMCP"
+    },
+    {
+        id: "ux-research-choice-overload",
+        title: "UX Research – Choice Overload",
+        description: "Applied cognitive psychology to analyze sequential vs. simultaneous decision-making in mobile UI.",
+        description_long: "Conducted in-depth UX research focusing on the cognitive aspects of choice overload in mobile user interfaces. Analyzed user behavior and decision-making processes to optimize UI design for better user experience. This project is currently ongoing, and cannot be shared publicly as it is going through peer review for academic publication.",
+        labels: ["UX Research", "Cognitive Psychology", "Mobile UI", "User Behavior Analysis"],
+        url: "",
+        git_link: null
     },
     {
         id: "data-viz-dashboard",
